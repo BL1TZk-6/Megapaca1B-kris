@@ -26,7 +26,7 @@ const reviewsSchema = new Schema(
     },
   },
   {
-    timestamps: true, // Guardar el moemtno exacto en el que se guardo y cuantas versiones tiene
+    timestamps: true, // Guardar el momento exacto en el que se guardo y cuantas versiones tiene
     strict: false, // Para lograr agregar campos nuevos
   },
 );
