@@ -1,52 +1,24 @@
-// Creamos un array de funciones
+import employeeModel from "../models/employees.js";
+
+// Array de funciones
 const employeeController = {};
 
-// Importo el Schema de la colección que voy a utilizar
-import employeesModel from "../models/employees.js";
-
 // SELECT
-employeeController.getEmployees = async (req, res) => {
-  const employees = await employeesModel.find();
-  res.json(employees);
-};
-
-// INSERT
-employeeController.insertEmployee = async (req, res) => {
-  // 1- Solicito los datos
-  const { name, lastName, salary, DUI, phone, email, password, idBranches } = req.body;
-
-  // 2- Lleno mi modelo con los datos que acabo de pedir
-  const newEmployee = new employeesModel({
-    name,
-    lastName,
-    salary,
-    DUI,
-    phone,
-    email,
-    password,
-    idBranches,
-  });
-
-  // 3- Guardo todo en la base de datos
-  await newEmployee.save();
-
-  res.json({ message: "Employee saved" });
-};
-
-// DELETE
-employeeController.deleteEmployees = async (req, res) => {
-  await employeesModel.findByIdAndDelete(req.params.id);
-  res.json({ message: "Employee deleted" });
+employeeController.getEmployee = async (req, res) => {
+  try {
+    const employees = await employeeModel.find();
+    return res.status(200).json(employees);
+  } catch (error) {
+    console.log("error " + error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 // UPDATE
-employeeController.updateEmployees = async (req, res) => {
-  const { name, lastName, salary, DUI, phone, email, password, idBranches } =
-    req.body;
-
-  await employeesModel.findByIdAndUpdate(
-    req.params.id,
-    {
+employeeController.updateEmployee = async (req, res) => {
+  try {
+    // 1- Solicitamos los nuevos datos
+    let {
       name,
       lastName,
       salary,
@@ -55,11 +27,60 @@ employeeController.updateEmployees = async (req, res) => {
       email,
       password,
       idBranches,
-    },
-    { new: true },
-  );
+      isVerified,
+    } = req.body;
 
-  res.json({ message: "Employee updated" });
+    // Validaciones
+    name = name?.trim();
+    email = email?.trim();
+
+    // Valores requeridos
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "Fields required" });
+    }
+
+    const employeeUpdated = await employeeModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        name,
+        lastName,
+        salary,
+        DUI,
+        phone,
+        email,
+        password,
+        idBranches,
+        isVerified,
+      },
+      { new: true },
+    );
+
+    if (!employeeUpdated) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    return res.status(200).json({ message: "Employee Updated" });
+  } catch (error) {
+    console.log("error " + error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// DELETE
+employeeController.deleteEmployee = async (res, req) => {
+  try {
+    const deleteEmployee = employeeModel.findByIdAndDelete(req.params.id);
+
+    // Si no se elimina es por que no encontró el id
+    if (!deleteEmployee) {
+      return res.status(404).json({ message: "Employee Not Found" });
+    }
+
+    return res.status(200).json({ message: "Employee Deleted" });
+  } catch (error) {
+    console.log("error " + error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 export default employeeController;

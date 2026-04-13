@@ -3,22 +3,22 @@ import crypto from "crypto"; // Generar codigo aleatorio
 import jsonwebtoken from "jsonwebtoken"; // Token
 import bcryptjs from "bcryptjs"; // Encriptar
 
-import customerModel from "../models/customers.js";
+import adminModel from "../models/admins.js";
 
 import { config } from "../../config.js";
 
 // Array de funciones
-const registerCustomerController = {};
+const registerAdminController = {};
 
-registerCustomerController.register = async (req, res) => {
+registerAdminController.register = async (req, res) => {
   // 1 - Solicitar los Datos
-  const { name, lastName, birthdate, email, password, isVerified } = req.body;
+  const { name, email, password, isVerified } = req.body;
 
   try {
     // Validar que el correo no exista en la base de datos
-    const existsCustomer = await customerModel.findOne({ email });
-    if (existsCustomer) {
-      return res.status(400).json({ message: "Customer already exists" });
+    const existsAdmin = await adminModel.findOne({ email });
+    if (existsAdmin) {
+      return res.status(400).json({ message: "Admin already exists" });
     }
 
     // Encriptar la contraseña
@@ -33,8 +33,6 @@ registerCustomerController.register = async (req, res) => {
       {
         randomNumber,
         name,
-        lastName,
-        birthdate,
         email,
         password: passwordHashed,
         isVerified,
@@ -61,11 +59,19 @@ registerCustomerController.register = async (req, res) => {
     const mailOptions = {
       from: config.email.user_email,
       to: email,
-      subject: "Verificación de Cuenta",
-      text:
-        "Para verificar tu cuenta, utiliza este código " +
-        randomNumber +
-        " expira en 15 minutos", // Se puede colocar un HTML en esta parte para que se vean mejor los correos
+      subject: "Código de Verificación de Cuenta",
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; border-radius: 10px; padding: 20px; text-align: center;">
+        <h2 style="color: #4A90E2;">Verificación de Cuenta</h2>
+        <p>Utiliza el siguiente código para validar tu acceso:</p>
+        <div style="background: #f4f4f7; padding: 20px; border-radius: 10px; margin: 20px 0;">
+            <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #333;">${randomNumber}</span>
+        </div>
+        <p style="color: #999; font-size: 14px;">Este código <strong>expira en 15 minutos</strong>.</p>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+        <p style="font-size: 12px; color: #bbb;">Si no intentaste registrarte, ignora este mensaje.</p>
+        </div>
+    `,
     };
 
     // 3- Enviar el correo
@@ -83,7 +89,7 @@ registerCustomerController.register = async (req, res) => {
 };
 
 // VERIFICAR EL CÓDIGO QUE ACABAMOS DE ENVIAR
-registerCustomerController.verifyCode = async (req, res) => {
+registerAdminController.verifyCode = async (req, res) => {
   try {
     //Solicitamos el código que escribieron en el frontend
     const { verificationCodeRequest } = req.body;
@@ -96,8 +102,6 @@ registerCustomerController.verifyCode = async (req, res) => {
     const {
       randomNumber: storedCode,
       name,
-      lastName,
-      birthdate,
       email,
       password,
       isVerified,
@@ -109,26 +113,24 @@ registerCustomerController.verifyCode = async (req, res) => {
     }
 
     // Sí todo está bien, y el usuario escribe el código, lo registramos en la BD
-    const NewCustomer = new customerModel({
+    const NewAdmin = new adminModel({
       name,
-      lastName,
-      birthdate,
       email,
       password,
       isVerified: true,
     });
 
-    await NewCustomer.save();
+    await NewAdmin.save();
 
     // Limpiar la Cookie
     res.clearCookie("registrationCookie");
 
     // Retornamos la respuesta del registro exitoso
-    return res.status(200).json({ message: "Customer registered" });
+    return res.status(200).json({ message: "Admin registered" });
   } catch (error) {
     console.log("error " + error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 
-export default registerCustomerController;
+export default registerAdminController;

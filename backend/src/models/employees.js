@@ -39,6 +39,9 @@ const employeesSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Branches"
   },
+  isVerified: {
+    type: Boolean,
+  },
 }, {
     timestamps: true, // Guardar el momento exacto en el que se guardo y cuantas versiones tiene 
     strict: false // Para lograr agregar campos nuevos
