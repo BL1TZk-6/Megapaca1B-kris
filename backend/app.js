@@ -8,6 +8,7 @@ import registerCustomerRoutes from "./src/routes/registerCustomer.js";
 import registerAdminRoutes from "./src/routes/registerAdmin.js";
 import adminRoutes from "./src/routes/admins.js";
 import registerEmployeeRoutes from "./src/routes/registerEmployee.js";
+import loginCustomerRoutes from "./src/routes/login.js";
 import cookieParser from "cookie-parser";
 
 // Creo una constante que guarde Express
@@ -27,5 +28,6 @@ app.use("/api/registerCustomer", registerCustomerRoutes);
 app.use("/api/admins", adminRoutes);
 app.use("/api/registerAdmin", registerAdminRoutes);
 app.use("/api/registerEmployee", registerEmployeeRoutes);
+app.use("/api/login", loginCustomerRoutes);
 
 export default app;
