@@ -50,6 +50,10 @@ loginCustomersController.login = async (req, res) => {
           message: "Cuenta bloqueada por multiples intentos fallidos",
         });
       }
+
+      await customerFound.save();
+
+      return res.status(401).json({ message: "Contraseña incorrecta" });
     }
 
     // Resetear intentos si login correcto
