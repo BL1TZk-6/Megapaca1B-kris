@@ -11,6 +11,7 @@ import registerEmployeeRoutes from "./src/routes/registerEmployee.js";
 import loginCustomerRoutes from "./src/routes/login.js";
 import logoutRoutes from "./src/routes/logout.js";
 import recoveryPasswordRoutes from "./src/routes/recoveryPassword.js";
+import providerRoutes from "./src/routes/provider.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -42,5 +43,6 @@ app.use("/api/registerEmployee", registerEmployeeRoutes);
 app.use("/api/login", loginCustomerRoutes);
 app.use("/api/logout", logoutRoutes);
 app.use("/api/recoveryPassword", recoveryPasswordRoutes);
+app.use("/api/providers", providerRoutes);
 
 export default app;
