@@ -18,6 +18,8 @@ import recoveryPasswordRoutes from "./src/routes/recoveryPassword.js";
 import providerRoutes from "./src/routes/provider.js";
 import limiter from "./src/middlewares/limiter.js";
 import cartRoutes from "./src/routes/cart.js";
+import wompiRoutes from "./src/routes/wompi.js";
+import deliveryDriversRoutes from "./src/routes/deliveryDrivers.js";
 
 // Creo una constante que guarde Express
 const app = express();
@@ -51,5 +53,7 @@ app.use("/api/logout", logoutRoutes);
 app.use("/api/recoveryPassword", recoveryPasswordRoutes);
 app.use("/api/providers", providerRoutes);
 app.use("/api/cart", cartRoutes);
+app.use("/api/wompi", wompiRoutes);
+app.use("/api/deliveryDrivers", deliveryDriversRoutes);
 
 export default app;
