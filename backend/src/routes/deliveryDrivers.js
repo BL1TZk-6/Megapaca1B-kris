@@ -13,6 +13,7 @@ router
 router
   .route("/:id")
   .put(upload.single("image"), driversController.updateDriver)
-  .delete(driversController.deleteDriver);
+  .delete(driversController.deleteDriver)
+  .get(driversController.getDriverById);
 
 export default router;

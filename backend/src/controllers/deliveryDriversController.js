@@ -103,4 +103,19 @@ deliveryDriversController.deleteDriver = async (req, res) => {
   }
 };
 
+// SELECT por ID
+deliveryDriversController.getDriverById = async (req, res) => {
+  try {
+    const driver = await deliveryDriversModel.findById(req.params.id);
+    if (!driver) {
+      return res.status(404).json({ message: "Driver not found" });
+    }
+
+    return res.status(200).json(driver);
+  } catch (error) {
+    console.log("error " + error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export default deliveryDriversController;
