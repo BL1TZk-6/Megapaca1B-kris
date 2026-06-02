@@ -133,6 +133,10 @@ cartController.updateCart = async (req, res) => {
       { new: true },
     );
 
+    if(!updatedCart){
+      return res.status(404).json({ message: "Cart not found" });
+    }
+
     return res.status(200).json({ message: "Cart updated" });
   } catch (error) {
     console.log("error " + error);
