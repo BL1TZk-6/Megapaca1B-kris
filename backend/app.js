@@ -58,7 +58,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/branches", branchesRoutes);
 app.use("/api/reviews", reviewsRoutes);
 app.use("/api/customers", customerRoutes);
-app.use("/api/admins", adminRoutes);
+app.use("/api/admins", validateAuthCookie(["Admin"]), adminRoutes);
 app.use("/api/providers", providerRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/deliveryDrivers", deliveryDriversRoutes);
@@ -69,7 +69,7 @@ app.use("/api/employees", validateAuthCookie(["Admin"]), employeeRoutes);
 // Register de los usuarios
 app.use("/api/registerCustomer", registerCustomerRoutes);
 app.use("/api/registerAdmin", registerAdminRoutes);
-app.use("/api/registerEmployee", registerEmployeeRoutes);
+app.use("/api/registerEmployee", validateAuthCookie(["Admin"]), registerEmployeeRoutes);
 
 // Login
 app.use("/api/loginCustomer", loginCustomerRoutes);
@@ -77,12 +77,12 @@ app.use("/api/loginEmployee", loginEmployeeRoutes);
 app.use("/api/loginAdmin", loginAdminRoutes);
 
 // Logout
-app.use("/api/logout", logoutRoutes);
+app.use("/api/logout", validateAuthCookie(["Customer", "Admin", "Employee"]), logoutRoutes);
 
 // Recovery
 app.use("/api/recoveryPassword", recoveryPasswordRoutes);
 
 // Wompi
-app.use("/api/wompi", wompiRoutes);
+app.use("/api/wompi", validateAuthCookie(["Customer", "Admin", "Employee"]),  wompiRoutes);
 
 export default app;
